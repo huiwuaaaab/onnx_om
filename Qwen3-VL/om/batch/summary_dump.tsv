@@ -1,0 +1,3 @@
+image	stem	status	dump_dir
+/e-vepfs-01/perception/wuhui/images_sample/images1.png	images1	ok	/e-vepfs-01/perception/wuhui/Qwen3-VL/batch/images1/dump
+/e-vepfs-01/perception/wuhui/images_sample/images2.png	images2	ok	/e-vepfs-01/perception/wuhui/Qwen3-VL/batch/images2/dump

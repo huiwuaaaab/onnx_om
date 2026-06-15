@@ -1,0 +1,22 @@
+{
+  "notes": {
+    "mm_proj": {
+      "inputs_from": "vision OM output last_hidden_state",
+      "shape": [
+        1,
+        1025,
+        1024
+      ],
+      "dtype": "float16"
+    },
+    "llm_preblock": {
+      "image_embeds_from": "mm_proj OM output",
+      "shape": [
+        1,
+        256,
+        1024
+      ],
+      "dtype": "float16"
+    }
+  }
+}
