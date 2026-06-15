@@ -1,4 +1,4 @@
-# ONNX → OM 多模态推理工程
+# ONNX → OM 多模态推理
 
 本仓库收录 **Gemma-4**、**Qwen3-VL**、**InternVL3.5-1B** 三个视觉语言（VL）模型的 ONNX 导出、数值对齐与华为 MDC 板端 OM 推理流水线。
 
