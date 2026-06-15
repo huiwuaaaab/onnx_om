@@ -59,7 +59,7 @@ DEFAULT_BATCH = OM_DIR  / "batch"
 DEFAULT_PROMPT_DIR = OM_DIR / "prompt_bin"
 DEFAULT_PROMPT = "What is shown in this image?"
 DEFAULT_IMAGE = (
-    "/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg"
+    "path/to/image.jpg"
 )
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}

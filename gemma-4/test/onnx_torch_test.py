@@ -24,7 +24,7 @@ torch.backends.cudnn.allow_tf32 = False
 # ===============================
 def load_onnx():
     providers = ["CUDAExecutionProvider"] if USE_ONNX_CUDA else ["CPUExecutionProvider"]
-    base = "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export"
+    base = "./onnx_export"
 
     vision = ort.InferenceSession(f"{base}/vision.onnx", providers=providers)
     mm_proj = ort.InferenceSession(f"{base}/mm_proj.onnx", providers=providers)
@@ -61,7 +61,7 @@ def load_onnx():
 # ===============================
 def preprocess(processor):
     image = Image.open(
-        "/e-vepfs-01/perception/wuhui/images_sample/images1.png"
+        "path/to/images/images1.png"
     ).convert("RGB").resize((768, 768))
 
     messages = [

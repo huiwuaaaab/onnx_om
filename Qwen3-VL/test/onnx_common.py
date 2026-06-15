@@ -40,7 +40,7 @@ MODEL_PATH = os.environ.get(
 )
 IMAGE_PATH = os.environ.get(
     "QWEN3_IMAGE_PATH",
-    "/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg",
+    "path/to/image.jpg",
 )
 PROMPT = os.environ.get("QWEN3_PROMPT", "What is shown in this image?")
 

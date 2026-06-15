@@ -15,7 +15,7 @@ class Config:
     pass
 
 DEFAULT_FP16_ONNX_PATH = (
-    "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/vision.onnx"
+    "./onnx_export/vision.onnx"
 )
 
 VISION_EXPORT_OUTPUT_NAMES = [
@@ -847,7 +847,7 @@ def export_vision_encoder(
 
     processor = AutoProcessor.from_pretrained(model_path)
     image = Image.open(
-        "/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg"
+        "path/to/image.jpg"
     ).convert("RGB").resize((768, 768))
     messages = [{
         "role": "user",
@@ -901,7 +901,7 @@ if __name__ == "__main__":
 
 
 
-# def export_vision_step_by_step(model, export_dir="/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export1"):
+# def export_vision_step_by_step(model, export_dir="./onnx_export"):
 #     import os
 #     os.makedirs(export_dir, exist_ok=True)
 #     config = get_default_config()
@@ -909,7 +909,7 @@ if __name__ == "__main__":
 
 #     # ===================== 完全沿用你的输入构造 =====================
 #     processor = AutoProcessor.from_pretrained("./gemma-4-E2B-it")
-#     image = Image.open('/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg').convert("RGB").resize((768, 768))
+#     image = Image.open('path/to/image.jpg').convert("RGB").resize((768, 768))
 #     messages = [
 #         {"role": "user", "content": [{"type": "image", "image": image}, {"type": "text", "text": "What is shown in this image?"}]}
 #     ]

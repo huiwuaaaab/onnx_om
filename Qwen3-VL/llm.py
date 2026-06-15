@@ -1055,7 +1055,7 @@ def main():
     )
     parser.add_argument(
         "--image",
-        default="/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg",
+        default="path/to/image.jpg",
         help="calibration image for preblock export",
     )
     args = parser.parse_args()

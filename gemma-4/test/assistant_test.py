@@ -10,7 +10,7 @@ from transformers import AutoModelForCausalLM, AutoProcessor
 DEVICE = "cpu"
 TARGET_MODEL_ID = "./gemma-4-E2B-it"
 ASSISTANT_MODEL_ID = "./gemma-4-E2B-it-assistant"
-ONNX_MODEL_PATH = "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/assistant.onnx"
+ONNX_MODEL_PATH = "./onnx_export/assistant.onnx"
 MAX_SEQ_LEN = 512
 
 
@@ -52,7 +52,7 @@ def main():
     ).to(DEVICE).eval()
     ort_session = ort.InferenceSession(ONNX_MODEL_PATH, providers=["CPUExecutionProvider"])
 
-    image = Image.open("/e-vepfs-01/perception/wuhui/image1.jpeg").convert("RGB").resize((768, 768))
+    image = Image.open("path/to/image.jpg").convert("RGB").resize((768, 768))
     inputs = processor.apply_chat_template(
         [
             {

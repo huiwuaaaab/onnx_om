@@ -10,7 +10,7 @@ from typing import Any
 
 FLOAT_DTYPE = torch.float16
 INT_DTYPE = torch.int32
-EXPORT_DIR = "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/InternVL3_5/onnx_export"
+EXPORT_DIR = "./onnx_export"
 
 class Config:
     pass

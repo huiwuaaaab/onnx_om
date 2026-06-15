@@ -62,7 +62,7 @@ REPO_ROOT = OM_DIR.parent
 DEFAULT_DUMP_ROOT = OM_DIR / "dump"
 MODEL_DIR = REPO_ROOT / "gemma-4-E2B-it"
 DEFAULT_IMAGE = (
-    "/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg"
+    "path/to/image.jpg"
 )
 DEFAULT_PLE_DIR = OM_DIR / "ple_table"
 DEFAULT_PLE_TABLE = DEFAULT_PLE_DIR / "embed_tokens_per_layer.bin"

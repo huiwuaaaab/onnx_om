@@ -8,7 +8,7 @@
 ### 单张
 
 ```bash
-cd /e-vepfs-01/perception/wuhui/gemma-4/om
+cd gemma-4/om
 
 # 本地：生成静态 bin（默认 image-only：只写 vision/，prompt 复用 prompt_bin/llm_preblock/）
 python dump_om_inputs.py --image path/image.jpg
@@ -16,17 +16,16 @@ python dump_om_inputs.py --image path/image.jpg
 # python dump_om_inputs.py --mode full --prompt-text "What is shown in this image?" --image path/image.jpg
 
 # 拷到 MDC：dump/ + ple_table/（PLE 全工程一份，只需 scp 一次）
-# mdc密码：Huawei12#$
 # 首次运行
-scp -r dump ple_table root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4
+scp -r dump ple_table user@<mdc-host>:/path/to/mdc/gemma4
 # 非首次
-scp -r dump root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4
+scp -r dump user@<mdc-host>:/path/to/mdc/gemma4
 
 # MDC：OM 推理
 RUN_MSAME=1 bash run_om_pipeline.sh --dump-dir dump
 
 # 输出拷到本地（含 state/、final_*；work/ 默认跑完已删）
-scp -r root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4/om_output .
+scp -r user@<mdc-host>:/path/to/mdc/gemma4/om_output .
 
 # 本地：解析
 python parse_state.py --output-dir om_output
@@ -35,24 +34,23 @@ python parse_state.py --output-dir om_output
 ### 批量
 
 ```bash
-cd /e-vepfs-01/perception/wuhui/gemma-4/om
+cd gemma-4/om
 
 # 本地 dump → 默认 batch/<stem>/dump/（只写 vision/，prompt 从 prompt_bin/ 复制）
 python dump_om_inputs.py --image-dir path/images
 # 换 prompt：--mode full 更新 prompt_bin/llm_preblock/，或指定 --prompt-dir
 
 # 拷到 MDC：batch/ + ple_table/
-# mdc密码：Huawei12#$
 # 首次运行
-scp -r batch ple_table root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4
+scp -r batch ple_table user@<mdc-host>:/path/to/mdc/gemma4
 # 非首次
-scp -r batch root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4
+scp -r batch user@<mdc-host>:/path/to/mdc/gemma4
 
 # MDC
 RUN_MSAME=1 bash run_om_pipeline.sh --batch-root batch
 
 # 输出拷到本地 → om/batch/
-scp -r root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4/batch .
+scp -r user@<mdc-host>:/path/to/mdc/gemma4/batch .
 python parse_state.py --batch-root batch
 python parse_state.py --batch-root batch --stem images2
 python parse_state.py --batch-root batch --write-response

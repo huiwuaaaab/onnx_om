@@ -23,7 +23,7 @@ IMAGE_MASK_END = int(os.environ.get("GEMMA_IMAGE_MASK_END", "261"))
 DEFAULT_PAD_TOKEN_ID = int(os.environ.get("GEMMA_PAD_TOKEN_ID", "0"))
 DEFAULT_STATIC_PREBLOCK = os.environ.get(
     "GEMMA4_STATIC_PREBLOCK",
-    "/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4/dump/llm_preblock",
+    "/path/to/mdc/gemma4/dump/llm_preblock",
 )
 
 SEQ_LEN = 512

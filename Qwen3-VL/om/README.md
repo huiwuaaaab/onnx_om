@@ -11,7 +11,7 @@ vision_256 → llm_preblock → llm_block1..3 → lm_head
 ### 单张
 
 ```bash
-cd /e-vepfs-01/perception/wuhui/Qwen3-VL/om
+cd Qwen3-VL/om
 
 # 本地：生成静态 bin（默认 image-only：只写 vision/，prompt 复用 prompt_bin/llm_preblock/）
 python dump_om_inputs.py --image path/image.jpg
@@ -19,13 +19,13 @@ python dump_om_inputs.py --image path/image.jpg
 # python dump_om_inputs.py --mode full --prompt "What is shown in this image?" --image path/image.jpg
 
 # 拷到 MDC（路径按实际板端目录调整）
-scp -r dump root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/qwen3-vl-2b/qwen_448_512
+scp -r dump user@<mdc-host>:/path/to/mdc/qwen3-vl
 
 # MDC：在 om 目录下跑推理
 RUN_MSAME=1 bash run_om_pipeline.sh --dump-dir dump
 
 # 输出拷到本地
-scp -r root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/qwen3-vl-2b/qwen_448_512/om_output .
+scp -r user@<mdc-host>:/path/to/mdc/qwen3-vl/om_output .
 
 # 本地：解析
 python parse_state.py --output-dir om_output --dump-dir dump
@@ -34,19 +34,19 @@ python parse_state.py --output-dir om_output --dump-dir dump
 ### 批量
 
 ```bash
-cd /e-vepfs-01/perception/wuhui/Qwen3-VL/om
+cd Qwen3-VL/om
 
 # 本地 dump → 默认 batch/<stem>/dump/
 python dump_om_inputs.py --image-dir path/images
 
 # 拷到 MDC
-scp -r batch root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/qwen3-vl-2b/qwen_448_512
+scp -r batch user@<mdc-host>:/path/to/mdc/qwen3-vl
 
 # MDC
 RUN_MSAME=1 bash run_om_pipeline.sh --batch-root batch
 
 # 输出拷回本地 → om/batch/
-scp -r root@10.10.50.224:/home/mdc/guanxj/mdc_aoe/weights_wuhui/qwen3-vl-2b/qwen_448_512/batch .
+scp -r user@<mdc-host>:/path/to/mdc/qwen3-vl/batch .
 
 # 本地 parse（在 om/ 下）
 python parse_state.py --batch-root batch
