@@ -1,0 +1,13 @@
+{
+  "description": "vision_448.onnx OM input",
+  "source": "dump_om_inputs.py (manual preprocess, no transformers)",
+  "tensors": {
+    "pixel_values": {
+      "shape": [
+        784,
+        1536
+      ],
+      "dtype": "float16"
+    }
+  }
+}

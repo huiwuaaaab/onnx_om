@@ -1,0 +1,10 @@
+{
+  "mode": "full",
+  "cur_len": 328,
+  "gen_steps": 20,
+  "num_assistant_tokens": 6,
+  "final_logits": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4/om_output/final_logits.bin",
+  "output_root": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4/om_output",
+  "state_dir": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4/om_output/state",
+  "work_root": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4/om_output/work"
+}

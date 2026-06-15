@@ -1,0 +1,35 @@
+# transformers 库（不需要上传）
+transformers/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# HuggingFace 缓存
+.cache/
+
+# 嵌套 git 仓库
+Qwen3-VL/.git/
+
+# 临时目录
+._____temp/
+
+# 模型权重文件
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+
+# 运行时 dump 二进制数据
+*.bin
+
+# 模型权重目录 — 仅保留空文件夹结构
+gemma-4/gemma-4-E2B-it/**
+!gemma-4/gemma-4-E2B-it/.gitkeep
+gemma-4/gemma-4-E2B-it-assistant/**
+!gemma-4/gemma-4-E2B-it-assistant/.gitkeep
+InternVL3_5-1B/InternVL3_5-1B-HF/**
+!InternVL3_5-1B/InternVL3_5-1B-HF/.gitkeep
+Qwen3-VL/Qwen3-VL-2B-Instruct/**
+!Qwen3-VL/Qwen3-VL-2B-Instruct/.gitkeep

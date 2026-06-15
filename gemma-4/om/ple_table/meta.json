@@ -1,0 +1,20 @@
+{
+  "description": "PLE lookup table (embed_tokens_per_layer * embed_scale)",
+  "source": "dump_om_inputs.py",
+  "safetensors": "/e-vepfs-01/perception/wuhui/gemma-4/gemma-4-E2B-it/model.safetensors",
+  "dump_dir": "/e-vepfs-01/perception/wuhui/gemma-4/om",
+  "vocab_size": 262144,
+  "num_hidden_layers": 35,
+  "hidden_size_per_layer_input": 256,
+  "embed_scale": 16.0,
+  "pad_token_id": 0,
+  "dtype": "float16",
+  "shape": [
+    262144,
+    35,
+    256
+  ],
+  "layout": "table[token_id] -> [num_layers, ple_dim]",
+  "bytes": 4697620480,
+  "usage": "row = table[token_id]; per_layer_inputs[:, pos] = row"
+}
