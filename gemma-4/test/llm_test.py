@@ -259,11 +259,14 @@ def get_onnx_inputs(model, inputs, llm_inputs):
         llm_input_ids, llm_inputs_embeds
     )
 
+    position_ids = np.arange(max_len, dtype=np.int32).reshape(1, max_len)
+
     return {
         "input_ids": input_ids_pad.to(torch.int32).cpu().numpy(),
         "attention_mask": attention_mask_pad.to(torch.int32).cpu().numpy(),
         "image_embeds": image_embeds.cpu().numpy().astype(np.float16),
         "per_layer_inputs": per_layer_inputs.cpu().numpy().astype(np.float16),
+        "position_ids": position_ids,
     }
 
 
@@ -275,6 +278,7 @@ def run_onnx_llm_split(ort_pre, ort_b1, ort_b2, ort_b3, ort_b4, ort_b5, ort_b6, 
         "image_embeds": onnx_inputs["image_embeds"],
         "attention_mask": onnx_inputs["attention_mask"],
         "per_layer_inputs": onnx_inputs["per_layer_inputs"],
+        "position_ids": onnx_inputs["position_ids"],
     }
     (
         inputs_embeds,
@@ -365,7 +369,7 @@ def run_onnx_llm_split(ort_pre, ort_b1, ort_b2, ort_b3, ort_b4, ort_b5, ort_b6, 
         },
     )[0]
 
-    hidden, logits = ort_b7.run(
+    hidden = ort_b7.run(
         None,
         {
             "inputs_embeds": hidden,
@@ -373,9 +377,9 @@ def run_onnx_llm_split(ort_pre, ort_b1, ort_b2, ort_b3, ort_b4, ort_b5, ort_b6, 
             **kv_inputs,
             "per_layer_input": per_layer_inputs[:, :, 30:35, :],
         },
-    )
+    )[0]
 
-    return hidden, logits
+    return hidden, None
 
 
 @torch.no_grad()

@@ -318,7 +318,8 @@ def cmd_process_speculative_accept(args: argparse.Namespace) -> None:
         f.write(f"step={args.step} cur_len={cur_len} accepted={accepted}\n")
 
     Path(args.accept_count_file).write_text(f"{accept_count}\n", encoding="utf-8")
-    print(f"step={args.step} accepted {accept_count} tokens: {accepted}")
+    hit_eos = any(tok == 1 for tok in accepted)  # <eos>
+    print(f"step={args.step} accepted {accept_count} tokens: {accepted} eos={int(hit_eos)}")
 
 
 def main() -> None:

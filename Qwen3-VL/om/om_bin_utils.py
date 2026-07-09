@@ -31,6 +31,7 @@ from export_config import ExportProfile, get_export_profile  # noqa: E402
 
 HIDDEN_DIM = 2048
 VOCAB_SIZE = 151936
+EOS_TOKEN_ID = 151645  # <|im_end|>, Qwen3-VL-2B-Instruct
 PIXEL_FEATURE_DIM = 1536
 
 PROFILE: ExportProfile = get_export_profile()
@@ -462,7 +463,8 @@ def cmd_update_decode_state(args: argparse.Namespace) -> None:
     _write_i32_array(state_dir / "input_ids.bin", input_ids)
     _write_i32_array(state_dir / "attention_mask.bin", attn)
     (state_dir / "last_token.txt").write_text(f"{next_id}\n", encoding="utf-8")
-    print(f"step={args.step} cur_len={cur_len} next_token={next_id}")
+    hit_eos = next_id == EOS_TOKEN_ID
+    print(f"step={args.step} cur_len={cur_len} next_token={next_id} eos={int(hit_eos)}")
 
 
 def cmd_init_cur_len(args: argparse.Namespace) -> None:

@@ -196,9 +196,14 @@ class Gemma4RMSNorm(nn.Module):
             self.weight = nn.Parameter(torch.ones(dim), requires_grad=True)
 
     def _norm(self, hidden_states: torch.Tensor):
-        mean_squared = hidden_states.pow(2).mean(-1, keepdim=True) + self.eps
-        # Use torch.pow() (over torch.sqrt() or torch.rsqrt()) to addess compiler differences between Torch and JAX
-        return hidden_states * torch.pow(mean_squared, -0.5)
+        # FP16-safe RMSNorm (same idea as Qwen3RMSNorm / vision.py): divide by amax
+        # before squaring so Pow/ReduceMean do not overflow on ORT CUDA (Thor k_norm).
+        x = hidden_states
+        eps = torch.full((), self.eps, dtype=x.dtype, device=x.device)
+        amax = x.abs().amax(dim=-1, keepdim=True) + eps
+        xs = x / amax
+        mean_squared = xs.pow(2).mean(-1, keepdim=True) + eps
+        return xs * torch.pow(mean_squared, -0.5)
 
     def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
         normed_output = self._norm(hidden_states)
@@ -1098,14 +1103,14 @@ def export_allchunk(module, model, inputs, config, device):
 
     base_path = "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_block"
     # # 前 15 层：不使用共享 KV
-    # export_block(module,  0,  5, config, inputs, use_shared_kv=False, path=f"{base_path}_0_5.onnx",  device=device)
-    # export_block(module,  5, 10, config, inputs, use_shared_kv=False, path=f"{base_path}_5_10.onnx",  device=device)
-    # export_block(module, 10, 15, config, inputs, use_shared_kv=False, path=f"{base_path}_10_15.onnx", device=device)
+    export_block(module,  0,  5, config, inputs, use_shared_kv=False, path=f"{base_path}_0_5.onnx",  device=device)
+    export_block(module,  5, 10, config, inputs, use_shared_kv=False, path=f"{base_path}_5_10.onnx",  device=device)
+    export_block(module, 10, 15, config, inputs, use_shared_kv=False, path=f"{base_path}_10_15.onnx", device=device)
 
-    # # 后 20 层：开启共享 KV
-    # export_block(module, 15, 20, config, inputs, use_shared_kv=True,  path=f"{base_path}_15_20.onnx", device=device)
-    # export_block(module, 20, 25, config, inputs, use_shared_kv=True,  path=f"{base_path}_20_25.onnx", device=device)
-    # export_block(module, 25, 30, config, inputs, use_shared_kv=True,  path=f"{base_path}_25_30.onnx", device=device)
+    # 后 20 层：开启共享 KV
+    export_block(module, 15, 20, config, inputs, use_shared_kv=True,  path=f"{base_path}_15_20.onnx", device=device)
+    export_block(module, 20, 25, config, inputs, use_shared_kv=True,  path=f"{base_path}_20_25.onnx", device=device)
+    export_block(module, 25, 30, config, inputs, use_shared_kv=True,  path=f"{base_path}_25_30.onnx", device=device)
     
     # 30~35 + norm（无 lm_head）；head 单独 lm_head.onnx [1,1,1536]->[1,1,vocab]
     export_block(

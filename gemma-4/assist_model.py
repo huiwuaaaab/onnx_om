@@ -88,9 +88,12 @@ class Gemma4RMSNorm(nn.Module):
             self.weight = nn.Parameter(torch.ones(dim), requires_grad=True)
 
     def _norm(self, hidden_states: torch.Tensor):
-        mean_squared = hidden_states.pow(2).mean(-1, keepdim=True) + self.eps
-        # Use torch.pow() (over torch.sqrt() or torch.rsqrt()) to addess compiler differences between Torch and JAX
-        return hidden_states * torch.pow(mean_squared, -0.5)
+        x = hidden_states
+        eps = torch.full((), self.eps, dtype=x.dtype, device=x.device)
+        amax = x.abs().amax(dim=-1, keepdim=True) + eps
+        xs = x / amax
+        mean_squared = xs.pow(2).mean(-1, keepdim=True) + eps
+        return xs * torch.pow(mean_squared, -0.5)
 
     def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
         normed_output = self._norm(hidden_states)

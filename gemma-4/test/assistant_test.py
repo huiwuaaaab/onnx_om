@@ -52,7 +52,7 @@ def main():
     ).to(DEVICE).eval()
     ort_session = ort.InferenceSession(ONNX_MODEL_PATH, providers=["CPUExecutionProvider"])
 
-    image = Image.open("/e-vepfs-01/perception/wuhui/image1.jpeg").convert("RGB").resize((768, 768))
+    image = Image.open("/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg").convert("RGB").resize((768, 768))
     inputs = processor.apply_chat_template(
         [
             {

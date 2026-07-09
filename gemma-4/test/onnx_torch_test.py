@@ -61,7 +61,7 @@ def load_onnx():
 # ===============================
 def preprocess(processor):
     image = Image.open(
-        "/e-vepfs-01/perception/wuhui/images_sample/images1.png"
+        "/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg"
     ).convert("RGB").resize((768, 768))
 
     messages = [

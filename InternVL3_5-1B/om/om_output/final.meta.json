@@ -1,9 +1,0 @@
-{
-  "mode": "full",
-  "cur_len": 324,
-  "gen_steps": 50,
-  "final_logits": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/internvl3_5/om_output/final_logits.bin",
-  "output_root": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/internvl3_5/om_output",
-  "state_dir": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/internvl3_5/om_output/state",
-  "work_root": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/internvl3_5/om_output/work"
-}

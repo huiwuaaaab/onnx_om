@@ -80,7 +80,7 @@ def get_llm_inputs(model, inputs):
         pixel_values,
         vision_feature_layer=-1,
         vision_feature_select_strategy="default",
-    )
+    ).pooler_output
     image_mask = model.model.get_placeholder_mask(
         input_ids,
         inputs_embeds=inputs_embeds,

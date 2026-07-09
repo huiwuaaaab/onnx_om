@@ -1,9 +1,0 @@
-{
-  "mode": "full",
-  "cur_len": 263,
-  "gen_steps": 50,
-  "final_logits": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/qwen3-vl-2b/qwen_448_512/batch/images1/om_output/final_logits.bin",
-  "output_root": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/qwen3-vl-2b/qwen_448_512/batch/images1/om_output",
-  "state_dir": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/qwen3-vl-2b/qwen_448_512/batch/images1/om_output/state",
-  "work_root": "/home/mdc/guanxj/mdc_aoe/weights_wuhui/qwen3-vl-2b/qwen_448_512/batch/images1/om_output/work"
-}

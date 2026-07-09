@@ -20,6 +20,7 @@ from pathlib import Path
 
 IMAGE_MASK_START = int(os.environ.get("GEMMA_IMAGE_MASK_START", "5"))
 IMAGE_MASK_END = int(os.environ.get("GEMMA_IMAGE_MASK_END", "261"))
+EOS_TOKEN_ID = 1  # <eos>
 DEFAULT_PAD_TOKEN_ID = int(os.environ.get("GEMMA_PAD_TOKEN_ID", "0"))
 DEFAULT_STATIC_PREBLOCK = os.environ.get(
     "GEMMA4_STATIC_PREBLOCK",
@@ -467,7 +468,8 @@ def cmd_update_decode_state(args: argparse.Namespace) -> None:
     _write_i32_array(state_dir / "input_ids.bin", input_ids)
     _write_i32_array(state_dir / "attention_mask.bin", attn)
     (state_dir / "last_token.txt").write_text(f"{next_id}\n", encoding="utf-8")
-    print(f"step={args.step} cur_len={cur_len} next_token={next_id}")
+    hit_eos = next_id == EOS_TOKEN_ID
+    print(f"step={args.step} cur_len={cur_len} next_token={next_id} eos={int(hit_eos)}")
 
     if args.ple_table:
         _patch_ple_column(state_dir, Path(args.ple_table), cur_len, int(args.pad_token_id))

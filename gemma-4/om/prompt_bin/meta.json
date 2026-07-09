@@ -1,0 +1,38 @@
+{
+  "description": "llm_preblock OM static inputs",
+  "source": "dump_llm_preblock_inputs.py",
+  "seq_len": 290,
+  "num_soft_tokens": 256,
+  "tensors": {
+    "input_ids": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "int32"
+    },
+    "attention_mask": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "int32"
+    },
+    "per_layer_inputs": {
+      "shape": [
+        1,
+        512,
+        35,
+        256
+      ],
+      "dtype": "float16"
+    },
+    "position_ids": {
+      "shape": [
+        1,
+        512
+      ],
+      "dtype": "int32"
+    }
+  }
+}

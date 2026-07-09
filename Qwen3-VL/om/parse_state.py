@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-[本地机] Parse MDC om_output/ → generated text (tokenizers only, no transformers).
+[本地机] Parse MDC om_output/ → generated text (stdlib + JSON vocab only).
 
-Reads final_input_ids.bin / final_attention_mask.bin / final_cur_len.txt from om_output/.
+Reads final_input_ids.bin / final_cur_len.txt from om_output/.
+Token decode uses tokenizer.json + tokenizer_config.json (no tokenizers package).
 """
 
 from __future__ import annotations
@@ -12,10 +13,10 @@ import json
 import os
 import struct
 import sys
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
-from tokenizers import Tokenizer
 
 OM_DIR = Path(__file__).resolve().parent
 REPO_ROOT = OM_DIR.parent
@@ -59,11 +60,70 @@ def read_i32_bin(path: Path, n: int | None = None) -> np.ndarray:
     return np.array(struct.unpack(f"<{count}i", data[: count * 4]), dtype=np.int32)
 
 
-def load_tokenizer(model_dir: Path) -> Tokenizer:
-    path = model_dir / "tokenizer.json"
-    if not path.is_file():
-        raise FileNotFoundError(path)
-    return Tokenizer.from_file(str(path))
+def _bytes_to_unicode() -> dict[int, str]:
+    bs = (
+        list(range(ord("!"), ord("~") + 1))
+        + list(range(ord("¡"), ord("¬") + 1))
+        + list(range(ord("®"), ord("ÿ") + 1))
+    )
+    cs = bs[:]
+    n = 0
+    for b in range(256):
+        if b not in bs:
+            bs.append(b)
+            cs.append(256 + n)
+            n += 1
+    return dict(zip(bs, [chr(c) for c in cs]))
+
+
+@lru_cache(maxsize=4)
+def load_vocab(model_dir: str) -> tuple[dict[int, str], set[int]]:
+    root = Path(model_dir)
+    tok_path = root / "tokenizer.json"
+    cfg_path = root / "tokenizer_config.json"
+    if not tok_path.is_file():
+        raise FileNotFoundError(tok_path)
+
+    data = json.loads(tok_path.read_text(encoding="utf-8"))
+    id_to_token: dict[int, str] = {
+        int(idx): token for token, idx in data["model"]["vocab"].items()
+    }
+    for entry in data.get("added_tokens", []):
+        id_to_token[int(entry["id"])] = entry["content"]
+
+    special_ids: set[int] = set()
+    if cfg_path.is_file():
+        cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+        for tid, meta in cfg.get("added_tokens_decoder", {}).items():
+            if meta.get("special"):
+                special_ids.add(int(tid))
+
+    return id_to_token, special_ids
+
+
+def decode_ids(
+    model_dir: Path,
+    ids: list[int],
+    *,
+    skip_special: bool,
+) -> str:
+    id_to_token, special_ids = load_vocab(str(model_dir.resolve()))
+    byte_decoder = {v: k for k, v in _bytes_to_unicode().items()}
+
+    pieces: list[str] = []
+    for token_id in ids:
+        if skip_special and token_id in special_ids:
+            continue
+        piece = id_to_token.get(token_id)
+        if piece is None:
+            continue
+        pieces.append(piece)
+
+    text = "".join(pieces)
+    try:
+        return bytearray(byte_decoder[c] for c in text).decode("utf-8", errors="replace")
+    except KeyError:
+        return text.replace("Ġ", " ").replace("Ċ", "\n")
 
 
 def cur_len_from_attention(attn: np.ndarray) -> int:
@@ -71,20 +131,23 @@ def cur_len_from_attention(attn: np.ndarray) -> int:
 
 
 def prefill_len_from_dump(dump_dir: Path) -> int:
-    pipeline = dump_dir / "pipeline.json"
-    if pipeline.is_file():
-        return int(json.loads(pipeline.read_text(encoding="utf-8"))["seq_len"])
-    attn_path = dump_dir / "llm_preblock" / "attention_mask.bin"
-    if not attn_path.is_file():
-        raise FileNotFoundError(attn_path)
-    return cur_len_from_attention(read_i32_bin(attn_path))
+    for meta_path in (
+        dump_dir / "meta.json",
+        dump_dir / "pipeline.json",
+    ):
+        if meta_path.is_file():
+            meta = json.loads(meta_path.read_text(encoding="utf-8"))
+            if "seq_len" in meta:
+                return int(meta["seq_len"])
 
+    for attn_path in (
+        dump_dir / "attention_mask.bin",
+        dump_dir / "llm_preblock" / "attention_mask.bin",
+    ):
+        if attn_path.is_file():
+            return cur_len_from_attention(read_i32_bin(attn_path))
 
-def decode_ids(tokenizer: Tokenizer, ids: list[int], *, skip_special: bool) -> str:
-    try:
-        return tokenizer.decode(ids, skip_special_tokens=skip_special)
-    except TypeError:
-        return tokenizer.decode(ids)
+    raise FileNotFoundError(f"no seq_len in {dump_dir} (need meta.json or attention_mask.bin)")
 
 
 def default_output_dir() -> Path:
@@ -93,7 +156,9 @@ def default_output_dir() -> Path:
 
 
 def _has_preblock(root: Path) -> bool:
-    return (root / "llm_preblock" / "attention_mask.bin").is_file()
+    return (root / "attention_mask.bin").is_file() or (
+        root / "llm_preblock" / "attention_mask.bin"
+    ).is_file()
 
 
 def resolve_prefill_root(explicit: str) -> Path | None:
@@ -179,11 +244,27 @@ def load_arrays(output_dir: Path, state_dir: Path) -> tuple[np.ndarray, np.ndarr
     return input_ids, attn, cur_len
 
 
+def _is_batch_item(item_dir: Path) -> bool:
+    if (item_dir / "vision_bin" / "pixel_values.bin").is_file():
+        return True
+    if (item_dir / "dump" / "vision" / "pixel_values.bin").is_file():
+        return True
+    return (item_dir / "om_output" / "final_input_ids.bin").is_file() or (
+        item_dir / "om_output" / "state" / "input_ids.bin"
+    ).is_file()
+
+
+def _resolve_item_prompt_bin(item_dir: Path, shared_prompt: Path) -> Path:
+    for cand in (item_dir / "prompt_bin", shared_prompt, item_dir / "dump" / "llm_preblock"):
+        if (cand / "meta.json").is_file() or (cand / "attention_mask.bin").is_file():
+            return cand
+    return shared_prompt
+
+
 def run_parse(args: argparse.Namespace) -> str | None:
     model_dir = Path(args.model_dir)
     state_dir, output_dir, dump_dir = resolve_paths(args)
 
-    tokenizer = load_tokenizer(model_dir)
     input_ids, _, cur_len = load_arrays(output_dir, state_dir)
 
     input_len = args.input_len
@@ -191,13 +272,13 @@ def run_parse(args: argparse.Namespace) -> str | None:
         input_len = prefill_len_from_dump(dump_dir)
     if input_len is None:
         print(
-            "error: need prefill length (--input-len N or --dump-dir dump/)",
+            "error: need prefill length (--input-len N or --dump-dir prompt_bin)",
             file=sys.stderr,
         )
         sys.exit(1)
 
     gen_ids = input_ids[:cur_len][input_len:cur_len].tolist()
-    gen_text = decode_ids(tokenizer, gen_ids, skip_special=args.skip_special_tokens)
+    gen_text = decode_ids(model_dir, gen_ids, skip_special=args.skip_special_tokens)
 
     if args.response_out:
         out = Path(args.response_out)
@@ -214,25 +295,28 @@ def run_parse_batch(args: argparse.Namespace) -> None:
     if not batch_root.is_dir():
         raise SystemExit(f"ERROR: batch root not found: {batch_root}")
 
-    item_dirs = sorted(
-        p for p in batch_root.iterdir() if p.is_dir() and (p / "dump" / "vision" / "pixel_values.bin").is_file()
-    )
+    shared_prompt = DEFAULT_PROMPT_BIN
+    if args.dump_dir:
+        shared_prompt = Path(args.dump_dir).resolve()
+
+    item_dirs = sorted(p for p in batch_root.iterdir() if p.is_dir() and _is_batch_item(p))
     if args.stem:
         item_dirs = [p for p in item_dirs if p.name == args.stem]
         if not item_dirs:
             raise SystemExit(f"ERROR: no item '{args.stem}' under {batch_root}")
 
     if not item_dirs:
-        raise SystemExit(f"ERROR: no items with dump/ under {batch_root}")
+        raise SystemExit(f"ERROR: no runnable items under {batch_root}")
 
     summary = batch_root / "summary_parse.tsv"
     summary.write_text("stem\tstatus\ttext\n", encoding="utf-8")
 
     for item_dir in item_dirs:
         stem = item_dir.name
+        prompt_bin = _resolve_item_prompt_bin(item_dir, shared_prompt)
         item_args = argparse.Namespace(**vars(args))
         item_args.output_dir = str(item_dir / "om_output")
-        item_args.dump_dir = str(item_dir / "dump")
+        item_args.dump_dir = str(prompt_bin)
         item_args.response_out = str(item_dir / "response.txt") if args.write_response else ""
         item_args.no_stdout = True
 
@@ -253,10 +337,10 @@ def run_parse_batch(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Parse Qwen3-VL om_output (no transformers)")
+    parser = argparse.ArgumentParser(description="Parse Qwen3-VL om_output (JSON vocab, no tokenizers)")
     parser.add_argument("input_len", nargs="?", type=int)
     parser.add_argument("--model-dir", default=str(DEFAULT_MODEL))
-    parser.add_argument("--dump-dir", default="")
+    parser.add_argument("--dump-dir", default="", help="prompt_bin dir for prefill seq_len")
     parser.add_argument("--output-dir", default="")
     parser.add_argument("--state-dir", default="")
     parser.add_argument("--response-out", default="")
@@ -268,7 +352,7 @@ def main() -> None:
         default=None,
         help="parse batch items (default root: om/batch)",
     )
-    parser.add_argument("--stem", default="", help="with --batch-root: only this item (e.g. images2)")
+    parser.add_argument("--stem", default="", help="with --batch-root: only this item")
     parser.add_argument(
         "--write-response",
         action="store_true",
