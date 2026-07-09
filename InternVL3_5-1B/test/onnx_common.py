@@ -10,7 +10,7 @@ import torch
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODEL_PATH = os.path.join(ROOT_DIR, "InternVL3_5-1B-HF")
 IMAGE_PATH = os.path.join(ROOT_DIR, "InternVL3_5-1B-HF/examples/image1.jpg")
-EXPORT_DIR = "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/InternVL3_5/onnx_export"
+EXPORT_DIR = "./onnx_export"
 DEVICE = "cpu"
 FLOAT_DTYPE = torch.float16
 INT_DTYPE = torch.int32

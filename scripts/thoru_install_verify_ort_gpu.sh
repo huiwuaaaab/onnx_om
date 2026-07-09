@@ -2,13 +2,13 @@
 # Install self-built onnxruntime-gpu wheel on ThorU and verify CUDA EP.
 set -euo pipefail
 
-WHEEL=${WHEEL:-/cus_app_data/guanxj/ort-build/dist/onnxruntime_gpu-1.27.0-cp312-cp312-linux_aarch64.whl}
-QWEN=${QWEN:-/cus_app_data/guanxj/qwen3-vl}
-SITE=${SITE:-/cus_app_data/guanxj/py312-site-packages}
-WHEELS=${WHEELS:-/cus_app_data/guanxj/qwen3-vl/wheels}
+WHEEL=${WHEEL:-/opt/vlm/ort-build/dist/onnxruntime_gpu-1.27.0-cp312-cp312-linux_aarch64.whl}
+QWEN=${QWEN:-/opt/vlm/qwen3-vl}
+SITE=${SITE:-/opt/vlm/py312-site-packages}
+WHEELS=${WHEELS:-/opt/vlm/qwen3-vl/wheels}
 
 if [[ ! -f "$WHEEL" ]]; then
-  WHEEL=$(ls -1 /cus_app_data/guanxj/ort-build/dist/onnxruntime_gpu-*.whl | head -1)
+  WHEEL=$(ls -1 /opt/vlm/ort-build/dist/onnxruntime_gpu-*.whl | head -1)
 fi
 [[ -f "$WHEEL" ]] || { echo "ERROR: wheel not found"; exit 1; }
 

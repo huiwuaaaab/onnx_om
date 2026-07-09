@@ -346,7 +346,7 @@ class InternVLVisionModel(nn.Module):
 
         return sequence_output
 
-def export_vision_encoder(model,path="/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/InternVL3_5/onnx_export/vision_448_notchunk.onnx"):
+def export_vision_encoder(model,path="./onnx_export/vision_448_notchunk.onnx"):
     config = Config()
     config.attention_bias = True
     config.hidden_size = 1024

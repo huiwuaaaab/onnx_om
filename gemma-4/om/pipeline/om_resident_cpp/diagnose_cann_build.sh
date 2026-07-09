@@ -71,7 +71,7 @@ if [[ "${ACL_FOUND}" -eq 0 ]]; then
   echo
   echo ">>> AOS 板端通常只有推理 runtime（msame 能跑），没有 CANN 开发头文件。"
   echo ">>> 请在有 CANN toolkit 的开发机编译 om_resident_daemon，再 scp 到板子："
-  echo ">>>   scp out/om_resident_daemon root@AOS:.../pipeline/om_resident_cpp/out/"
+  echo ">>>   scp out/om_resident_daemon user@<device-host>:.../pipeline/om_resident_cpp/out/"
 fi
 echo
 
@@ -90,8 +90,8 @@ if command -v msame >/dev/null 2>&1; then
   echo "  PATH: $(command -v msame)"
   file "$(command -v msame)" || true
 fi
-for m in /home/mdc/guanxj/qwen3-vl/msame \
-         /home/mdc/guanxj/qwen3-vl/om/msame \
+for m in /opt/vlm/qwen3-vl/msame \
+         /opt/vlm/qwen3-vl/om/msame \
          ../msame ../../msame ./msame; do
   if [[ -x "${m}" ]]; then
     file "${m}" || true

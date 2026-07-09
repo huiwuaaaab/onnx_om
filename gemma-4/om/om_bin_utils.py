@@ -24,7 +24,7 @@ EOS_TOKEN_ID = 1  # <eos>
 DEFAULT_PAD_TOKEN_ID = int(os.environ.get("GEMMA_PAD_TOKEN_ID", "0"))
 DEFAULT_STATIC_PREBLOCK = os.environ.get(
     "GEMMA4_STATIC_PREBLOCK",
-    "/home/mdc/guanxj/mdc_aoe/weights_wuhui/gemma4/dump/llm_preblock",
+    "/opt/vlm/gemma4/dump/llm_preblock",
 )
 
 SEQ_LEN = 512

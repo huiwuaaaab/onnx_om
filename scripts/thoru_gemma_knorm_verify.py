@@ -8,9 +8,9 @@ Pass criteria (GPU vs CPU preblock feed):
   - self_attn/Add_1 (K RoPE): not all-zero
 
 Usage (on ThorU after syncing new onnx_export + this script):
-  export PYTHONPATH=/cus_app_data/guanxj/py312-site-packages
+  export PYTHONPATH=/opt/vlm/py312-site-packages
   export LD_LIBRARY_PATH=/usr/local/cuda-12.8/thor/targets/aarch64-linux/lib:/usr/lib/aarch64-linux-gnu
-  export GEMMA4_ONNX_EXPORT=/cus_app_data/guanxj/gemma4/onnx_export
+  export GEMMA4_ONNX_EXPORT=/opt/vlm/gemma4/onnx_export
   python3 scripts/thoru_gemma_knorm_verify.py --block llm_block_0_5.onnx
   python3 scripts/thoru_gemma_knorm_verify.py --block llm_block_5_10.onnx
 
@@ -30,8 +30,8 @@ from pathlib import Path
 import numpy as np
 import onnxruntime as ort
 
-EX = Path(os.environ.get("GEMMA4_ONNX_EXPORT", "/cus_app_data/guanxj/gemma4/onnx_export"))
-OM = Path(os.environ.get("GEMMA4_OM", "/cus_app_data/guanxj/gemma4/om"))
+EX = Path(os.environ.get("GEMMA4_ONNX_EXPORT", "/opt/vlm/gemma4/onnx_export"))
+OM = Path(os.environ.get("GEMMA4_OM", "/opt/vlm/gemma4/om"))
 CUDA = [
     ("CUDAExecutionProvider", {"device_id": "0", "cudnn_conv_algo_search": "DEFAULT", "use_tf32": "0"}),
     "CPUExecutionProvider",

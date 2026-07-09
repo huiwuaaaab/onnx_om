@@ -25,7 +25,7 @@ CUDA = [
     "CPUExecutionProvider",
 ]
 CPU = ["CPUExecutionProvider"]
-BASE = Path("/cus_app_data/guanxj")
+BASE = Path(os.environ.get("THORU_DATA_DIR", "/opt/vlm"))
 
 
 def sess(export: Path, name: str, prov: list) -> ort.InferenceSession:

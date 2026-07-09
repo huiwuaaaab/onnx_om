@@ -49,10 +49,10 @@ class MmProjWrapper(nn.Module):
         return self.embedding_projection(self.embedding_pre_projection_norm(inputs_embeds))
 
 
-def export_projection(model, path="/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/mm_proj.onnx"):
+def export_projection(model, path="./onnx_export/mm_proj.onnx"):
     model = model.to("cpu", torch.float16)
     processor = AutoProcessor.from_pretrained("./gemma-4-E2B-it")
-    image = Image.open('/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg').convert("RGB").resize((768, 768))
+    image = Image.open('../../imgs/example.jpg').convert("RGB").resize((768, 768))
     # Prompt - add image before text
     messages = [
         {

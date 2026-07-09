@@ -8,7 +8,7 @@ from transformers import AutoModelForCausalLM, AutoProcessor
 # 配置
 # ===============================
 MODEL_PATH = "./gemma-4-E2B-it"
-ONNX_BASE = "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export"
+ONNX_BASE = "./onnx_export"
 
 DEVICE = "cpu"
 USE_ONNX_CUDA = False
@@ -91,7 +91,7 @@ def _cast_float_array(arr: np.ndarray, dtype: np.dtype) -> np.ndarray:
 def preprocess(processor):
     image = (
         Image.open(
-            "/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg"
+            "../../imgs/example.jpg"
         )
         .convert("RGB")
         .resize((768, 768))

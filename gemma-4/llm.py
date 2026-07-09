@@ -1097,11 +1097,11 @@ def export_allchunk(module, model, inputs, config, device):
     #     model,
     #     config,
     #     inputs,
-    #     "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_preblock.onnx",
+    #     "./onnx_export/llm_preblock.onnx",
     #     device
     # )
 
-    base_path = "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_block"
+    base_path = "./onnx_export/llm_block"
     # # 前 15 层：不使用共享 KV
     export_block(module,  0,  5, config, inputs, use_shared_kv=False, path=f"{base_path}_0_5.onnx",  device=device)
     export_block(module,  5, 10, config, inputs, use_shared_kv=False, path=f"{base_path}_5_10.onnx",  device=device)
@@ -1127,7 +1127,7 @@ def export_allchunk(module, model, inputs, config, device):
     )
     export_lm_head(
         model.lm_head,
-        "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/lm_head.onnx",
+        "./onnx_export/lm_head.onnx",
         device,
         hidden_size=config.hidden_size,
     )
@@ -1228,7 +1228,7 @@ def main():
         attn_implementation="eager",
     ).to(DEVICE).eval()
     processor = AutoProcessor.from_pretrained(MODEL_PATH)
-    image = Image.open('/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg').convert("RGB").resize((768, 768))
+    image = Image.open('../../imgs/example.jpg').convert("RGB").resize((768, 768))
 
     # Prompt - add image before text
     messages = [

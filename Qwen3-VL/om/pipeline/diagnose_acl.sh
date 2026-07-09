@@ -2,7 +2,7 @@
 # Diagnose pyACL availability on MDC / AOS — run on board before pipe resident mode.
 #
 # Usage:
-#   cd /home/mdc/guanxj/qwen3-vl
+#   cd /opt/vlm/qwen3-vl
 #   bash pipeline/diagnose_acl.sh
 
 set -euo pipefail

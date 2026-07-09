@@ -114,7 +114,7 @@ class multi_modal_projector(nn.Module):
         vision_features = self.mm_proj(vision_features)
         return vision_features
 
-def export_projection(model,path="/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/InternVL3_5/onnx_export/mm_proj.onnx"):
+def export_projection(model,path="./onnx_export/mm_proj.onnx"):
     model = model.to("cuda", FLOAT_DTYPE)
     processor = AutoProcessor.from_pretrained("./InternVL3_5-1B-HF")
     image = Image.open('./InternVL3_5-1B-HF/examples/image1.jpg').convert("RGB")

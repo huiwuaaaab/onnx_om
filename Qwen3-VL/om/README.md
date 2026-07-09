@@ -11,20 +11,20 @@ vision_448 → llm_preblock → llm_block1..3 → lm_head
 ### 单张
 
 ```bash
-cd /e-vepfs-01/perception/wuhui/Qwen3-VL/om
+cd Qwen3-VL/om
 
 # 本地：生成静态 bin
 python dump_vision_om_inputs.py --image path/image.jpg
 python dump_llm_preblock_inputs.py --prompt "What is shown in this image?"
 
 # 拷到 MDC（路径按实际板端目录调整）
-scp -r vision_bin prompt_bin root@10.10.50.224:/home/mdc/guanxj/qwen3-vl/
+scp -r vision_bin prompt_bin user@<device-ip>:/opt/vlm/qwen3-vl/
 
 # MDC：在 om 目录下跑推理（默认读 om/vision_bin + om/prompt_bin）
 RUN_MSAME=1 bash run_om_pipeline.sh
 
 # 输出拷到本地
-scp -r root@10.10.50.224:/home/mdc/guanxj/qwen3-vl/om_output .
+scp -r user@<device-ip>:/opt/vlm/qwen3-vl/om_output .
 
 # 本地：解析
 python parse_state.py --output-dir om_output --dump-dir prompt_bin
@@ -33,14 +33,14 @@ python parse_state.py --output-dir om_output --dump-dir prompt_bin
 ### 批量
 
 ```bash
-cd /e-vepfs-01/perception/wuhui/Qwen3-VL/om
+cd Qwen3-VL/om
 
 # 本地：每张图写 batch/<stem>/vision_bin/；prompt 共用 om/prompt_bin/（只需 dump 一次）
 python dump_vision_om_inputs.py --image-dir path/images
 python dump_llm_preblock_inputs.py --prompt "What is shown in this image?"
 
 # 拷到 MDC
-scp -r batch prompt_bin root@10.10.50.224:/home/mdc/guanxj/qwen3-vl/
+scp -r batch prompt_bin user@<device-ip>:/opt/vlm/qwen3-vl/
 
 # MDC：串行 batch
 RUN_MSAME=1 bash run_om_pipeline.sh --batch-root batch
@@ -49,7 +49,7 @@ RUN_MSAME=1 bash run_om_pipeline.sh --batch-root batch
 RUN_MSAME=1 bash run_om_pipeline_pipe.sh ./batch
 
 # 输出拷回本地 → om/batch/
-scp -r root@10.10.50.224:/home/mdc/guanxj/qwen3-vl/batch .
+scp -r user@<device-ip>:/opt/vlm/qwen3-vl/batch .
 
 # 本地 parse（在 om/ 下）
 python parse_state.py --batch-root batch

@@ -48,20 +48,14 @@ _PROFILES = {
         name="256_256",
         image_size=256,
         max_seq_len=256,
-        export_dir=(
-            "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/Qwen3-vlTest/"
-            "qwen_256_256/onnx_export_256_256"
-        ),
+        export_dir="./onnx_export_256_256",
         vision_onnx_name="vision_256.onnx",
     ),
     "448_512": ExportProfile(
         name="448_512",
         image_size=448,
         max_seq_len=512,
-        export_dir=(
-            "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/Qwen3-vlTest/"
-            "qwen_448_512/onnx_export_448_512"
-        ),
+        export_dir="./onnx_export_448_512",
         vision_onnx_name="vision_448.onnx",
     ),
 }

@@ -1038,7 +1038,7 @@ def main():
         attn_implementation="eager",
     ).to(DEVICE).eval()
     processor = AutoProcessor.from_pretrained("./gemma-4-E2B-it")
-    image = Image.open('/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg').convert("RGB").resize((768, 768))
+    image = Image.open('../../imgs/example.jpg').convert("RGB").resize((768, 768))
 
     # Prompt - add image before text
     messages = [
@@ -1070,7 +1070,7 @@ def main():
         assistant_model,
         config,
         inputs,
-        path="/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/assistant.onnx",
+        path="./onnx_export/assistant.onnx",
         device=DEVICE,
         embed=target_model.model.language_model.embed_tokens.to(device=DEVICE, dtype=torch.float16),
         lm_head=model.lm_head.to(device=DEVICE, dtype=torch.float16),

@@ -23,19 +23,19 @@ torch.backends.cudnn.allow_tf32 = False
 def load_onnx():
     providers = ["CUDAExecutionProvider"] if USE_ONNX_CUDA else ["CPUExecutionProvider"]
 
-    vision = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/vision.onnx", providers=providers)
-    mm_proj = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/mm_proj.onnx", providers=providers)
+    vision = ort.InferenceSession("./onnx_export/vision.onnx", providers=providers)
+    mm_proj = ort.InferenceSession("./onnx_export/mm_proj.onnx", providers=providers)
 
-    ort_pre = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_preblock.onnx", providers=providers)
-    ort_b1  = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_block_0_5.onnx", providers=providers)
-    ort_b2  = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_block_5_10.onnx", providers=providers)
-    ort_b3  = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_block_10_15.onnx", providers=providers)
-    ort_b4  = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_block_15_20.onnx", providers=providers)
-    ort_b5  = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_block_20_25.onnx", providers=providers)
-    ort_b6  = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_block_25_30.onnx", providers=providers)
-    ort_b7  = ort.InferenceSession("/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/llm_block_30_35.onnx", providers=providers)
+    ort_pre = ort.InferenceSession("./onnx_export/llm_preblock.onnx", providers=providers)
+    ort_b1  = ort.InferenceSession("./onnx_export/llm_block_0_5.onnx", providers=providers)
+    ort_b2  = ort.InferenceSession("./onnx_export/llm_block_5_10.onnx", providers=providers)
+    ort_b3  = ort.InferenceSession("./onnx_export/llm_block_10_15.onnx", providers=providers)
+    ort_b4  = ort.InferenceSession("./onnx_export/llm_block_15_20.onnx", providers=providers)
+    ort_b5  = ort.InferenceSession("./onnx_export/llm_block_20_25.onnx", providers=providers)
+    ort_b6  = ort.InferenceSession("./onnx_export/llm_block_25_30.onnx", providers=providers)
+    ort_b7  = ort.InferenceSession("./onnx_export/llm_block_30_35.onnx", providers=providers)
     ort_lm_head = ort.InferenceSession(
-        "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export/lm_head.onnx",
+        "./onnx_export/lm_head.onnx",
         providers=providers,
     )
 
@@ -48,7 +48,7 @@ def load_onnx():
 # 预处理
 # ===============================
 def preprocess(processor):
-    image = Image.open('/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg').convert("RGB").resize((768, 768))
+    image = Image.open('../../imgs/example.jpg').convert("RGB").resize((768, 768))
 
     messages = [
         {

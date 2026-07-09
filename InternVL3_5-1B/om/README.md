@@ -11,20 +11,20 @@ vision_448 → mm_proj → llm_preblock → llm_block1..3 → lm_head
 ### 单张
 
 ```bash
-cd /e-vepfs-01/perception/wuhui/InternVL3_5-1B/om
+cd InternVL3_5-1B/om
 
 # 本地：vision + prompt 分开 dump
 python dump_vision_om_inputs.py --image path/image.jpg
 python dump_llm_preblock_inputs.py --prompt "What is shown in this image?"
 
 # 拷到 MDC（vision_bin + prompt_bin + 脚本 + om_export/）
-scp -r vision_bin prompt_bin root@10.10.50.224:/home/mdc/guanxj/internvl
+scp -r vision_bin prompt_bin user@<device-ip>:/opt/vlm/internvl
 
 # MDC
 RUN_MSAME=1 bash run_om_pipeline.sh
 
 # 输出拷到本地
-scp -r root@10.10.50.224:/home/mdc/guanxj/internvl/om_output .
+scp -r user@<device-ip>:/opt/vlm/internvl/om_output .
 
 # 本地 parse
 python parse_state.py --output-dir om_output --dump-dir prompt_bin
@@ -33,14 +33,14 @@ python parse_state.py --output-dir om_output --dump-dir prompt_bin
 ### 批量
 
 ```bash
-cd /e-vepfs-01/perception/wuhui/InternVL3_5-1B/om
+cd InternVL3_5-1B/om
 
 # 本地 dump
 python dump_vision_om_inputs.py --image-dir path/images   # → batch/<stem>/vision_bin/
 python dump_llm_preblock_inputs.py --prompt "What is shown in this image?"  # → prompt_bin/
 
 # 拷到 MDC
-scp -r batch prompt_bin root@10.10.50.224:/home/mdc/guanxj/internvl
+scp -r batch prompt_bin user@<device-ip>:/opt/vlm/internvl
 
 # MDC — 串行 batch
 RUN_MSAME=1 bash run_om_pipeline.sh --batch-root batch
@@ -49,7 +49,7 @@ RUN_MSAME=1 bash run_om_pipeline.sh --batch-root batch
 RUN_MSAME=1 bash run_om_pipeline_pipe.sh ./batch
 
 # 输出拷回 → om/batch/
-scp -r root@10.10.50.224:/home/mdc/guanxj/internvl/batch .
+scp -r user@<device-ip>:/opt/vlm/internvl/batch .
 python parse_state.py --batch-root batch --write-response
 ```
 

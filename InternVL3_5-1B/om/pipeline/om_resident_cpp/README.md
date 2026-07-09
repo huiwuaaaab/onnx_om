@@ -17,7 +17,7 @@ pipe.sh 调度
 ## MDC 上编译
 
 ```bash
-cd /home/mdc/guanxj/qwen3-vl/pipeline/om_resident_cpp
+cd /opt/vlm/qwen3-vl/pipeline/om_resident_cpp
 
 # 先看板子上有没有开发头文件
 bash diagnose_cann_build.sh
@@ -38,8 +38,8 @@ source /usr/local/Ascend/ascend-toolkit/set_env.sh   # 或你的 CANN 路径
 bash build.sh
 
 scp out/om_resident_daemon \
-  root@AOS:/home/mdc/guanxj/qwen3-vl/pipeline/om_resident_cpp/out/
-chmod +x /home/mdc/guanxj/qwen3-vl/pipeline/om_resident_cpp/out/om_resident_daemon
+  user@<device-host>:/opt/vlm/qwen3-vl/pipeline/om_resident_cpp/out/
+chmod +x /opt/vlm/qwen3-vl/pipeline/om_resident_cpp/out/om_resident_daemon
 ```
 
 也可在与 msame 相同的编译环境编（msame 从哪编，daemon 就在哪编）。
@@ -57,7 +57,7 @@ bash build.sh
 编译完成后，`run_om_pipeline_pipe.sh` **自动优先**用 C++ daemon：
 
 ```bash
-cd /home/mdc/guanxj/qwen3-vl
+cd /opt/vlm/qwen3-vl
 pkill -f om_resident || true
 rm -rf batch/.om_pipe
 
@@ -107,7 +107,7 @@ git clone https://github.com/Ascend/tools.git
 # 手动测 vision worker
 source ../acl_env.sh
 ./out/om_resident_daemon vision \
-  /home/mdc/guanxj/qwen3-vl/om_export/vision_448_xxx.om \
+  /opt/vlm/qwen3-vl/om_export/vision_448_xxx.om \
   /tmp/test_queue
 # 另开终端往 /tmp/test_queue/jobs/ 写 .env + .pending
 ```

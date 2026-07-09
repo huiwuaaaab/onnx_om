@@ -1,8 +1,8 @@
 {
   "description": "PLE lookup table (embed_tokens_per_layer * embed_scale)",
   "source": "dump_om_inputs.py",
-  "safetensors": "/e-vepfs-01/perception/wuhui/gemma-4/gemma-4-E2B-it/model.safetensors",
-  "dump_dir": "/e-vepfs-01/perception/wuhui/gemma-4/om",
+  "safetensors": "../gemma-4-E2B-it/model.safetensors",
+  "dump_dir": "gemma-4/om",
   "vocab_size": 262144,
   "num_hidden_layers": 35,
   "hidden_size_per_layer_input": 256,

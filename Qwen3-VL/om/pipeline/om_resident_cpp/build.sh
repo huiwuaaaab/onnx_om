@@ -9,7 +9,7 @@
 # If AOS has runtime-only CANN (no acl.h), build on a dev host with toolkit
 # (same CANN version / aarch64) and scp out/om_resident_daemon to board.
 #
-#   scp out/om_resident_daemon root@AOS:/home/mdc/guanxj/qwen3-vl/pipeline/om_resident_cpp/out/
+#   scp out/om_resident_daemon user@<device-host>:/opt/vlm/qwen3-vl/pipeline/om_resident_cpp/out/
 
 set -euo pipefail
 
@@ -124,7 +124,7 @@ if [[ -z "${ASCEND_INCLUDE}" || ! -f "${ASCEND_INCLUDE}/acl/acl.h" ]]; then
   echo >&2
   echo "  # 开发机（有 ascend-toolkit）" >&2
   echo "  cd pipeline/om_resident_cpp && bash build.sh" >&2
-  echo "  scp out/om_resident_daemon root@AOS:/home/mdc/guanxj/qwen3-vl/pipeline/om_resident_cpp/out/" >&2
+  echo "  scp out/om_resident_daemon user@<device-host>:/opt/vlm/qwen3-vl/pipeline/om_resident_cpp/out/" >&2
   echo >&2
   echo "或先运行: bash diagnose_cann_build.sh" >&2
   exit 1

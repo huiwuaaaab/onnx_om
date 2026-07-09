@@ -12,7 +12,7 @@ Assist: assistant speculative decode (serial 模式, MODE=full)
 ### 单张
 
 ```bash
-cd /e-vepfs-01/perception/wuhui/gemma-4/om
+cd gemma-4/om
 
 python dump_vision_om_inputs.py --image path/image.jpg
 python dump_llm_preblock_inputs.py --prompt "What is shown in this image?"

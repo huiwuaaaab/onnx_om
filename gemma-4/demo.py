@@ -27,7 +27,7 @@ assistant_model = AutoModelForCausalLM.from_pretrained(
     device_map="auto",
 )
 
-image = Image.open('/e-vepfs-01/perception/wuhui/InternVL3_5-1B/InternVL3_5-1B-HF/examples/image1.jpg').convert("RGB").resize((768, 768))
+image = Image.open('../../imgs/example.jpg').convert("RGB").resize((768, 768))
 # Prompt - add image before text
 messages = [
     {

@@ -2,37 +2,37 @@
 # Build onnxruntime-gpu wheel inside CUDA devel Docker on ThorU (offline).
 #
 # Prereqs on ThorU:
-#   /cus_app_data/guanxj/docker-images/cuda128-devel-u24-arm64.tar
-#   /cus_app_data/guanxj/ort-build/onnxruntime/
-#   /cus_app_data/guanxj/ort-build/wheels-arm64/
-#   /cus_app_data/guanxj/ort-build/py312-include/
+#   /opt/vlm/docker-images/cuda128-devel-u24-arm64.tar
+#   /opt/vlm/ort-build/onnxruntime/
+#   /opt/vlm/ort-build/wheels-arm64/
+#   /opt/vlm/ort-build/py312-include/
 #
 # Usage:
-#   bash /cus_app_data/guanxj/scripts/thoru_build_ort_gpu_docker.sh
-#   tail -f /cus_app_data/guanxj/ort-build/build.log
+#   bash /opt/vlm/scripts/thoru_build_ort_gpu_docker.sh
+#   tail -f /opt/vlm/ort-build/build.log
 #
 set -euo pipefail
 
-DOCKER=${DOCKER:-/cus_app_data/guanxj/docker-bin/sbin/docker}
-SUDO_PASS=${SUDO_PASS:-nvidia}
+DOCKER=${DOCKER:-/opt/vlm/docker-bin/sbin/docker}
+SUDO_PASS=${SUDO_PASS:?Set SUDO_PASS for sudo on ThorU}
 run_sudo() {
   echo "${SUDO_PASS}" | sudo -S "$@"
 }
 IMAGE=${IMAGE:-nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04}
-ORT_SRC=${ORT_SRC:-/cus_app_data/guanxj/ort-build/onnxruntime}
-OUT_DIR=${OUT_DIR:-/cus_app_data/guanxj/ort-build/dist}
-WHEELS=${WHEELS:-/cus_app_data/guanxj/qwen3-vl/wheels}
-BUILD_WHEELS=${BUILD_WHEELS:-/cus_app_data/guanxj/ort-build/wheels-arm64}
-CMAKE_MIRROR=${CMAKE_MIRROR:-/cus_app_data/guanxj/ort-build/cmake-mirror}
-PY312_INC=${PY312_INC:-/cus_app_data/guanxj/ort-build/py312-include}
-PY312_ARCH_INC=${PY312_ARCH_INC:-/cus_app_data/guanxj/ort-build/py312-arch-include}
+ORT_SRC=${ORT_SRC:-/opt/vlm/ort-build/onnxruntime}
+OUT_DIR=${OUT_DIR:-/opt/vlm/ort-build/dist}
+WHEELS=${WHEELS:-/opt/vlm/qwen3-vl/wheels}
+BUILD_WHEELS=${BUILD_WHEELS:-/opt/vlm/ort-build/wheels-arm64}
+CMAKE_MIRROR=${CMAKE_MIRROR:-/opt/vlm/ort-build/cmake-mirror}
+PY312_INC=${PY312_INC:-/opt/vlm/ort-build/py312-include}
+PY312_ARCH_INC=${PY312_ARCH_INC:-/opt/vlm/ort-build/py312-arch-include}
 HOST_SITE=${HOST_SITE:-/home/nvidia/.local/lib/python3.12/site-packages}
 NUMPY_INC=${NUMPY_INC:-/home/nvidia/.local/lib/python3.12/site-packages/numpy/_core/include}
-TAR=${TAR:-/cus_app_data/guanxj/docker-images/cuda128-devel-u24-arm64.tar}
+TAR=${TAR:-/opt/vlm/docker-images/cuda128-devel-u24-arm64.tar}
 JOBS=${JOBS:-2}
 RESUME=${RESUME:-0}
 CUDA_ARCH=${CUDA_ARCH:-"101-real;101-virtual"}
-LOG=${LOG:-/cus_app_data/guanxj/ort-build/build.log}
+LOG=${LOG:-/opt/vlm/ort-build/build.log}
 
 mkdir -p "$OUT_DIR" "$(dirname "$LOG")"
 

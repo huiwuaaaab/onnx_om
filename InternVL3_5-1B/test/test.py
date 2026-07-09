@@ -26,7 +26,7 @@ PROMPT_BIN = OM / "prompt_bin"
 VISION_BIN = OM / "vision_bin"
 EXPORT_DIR = Path(os.environ.get(
     "INTERNVL_ONNX_EXPORT",
-    "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/InternVL3_5/onnx_export",
+    "./onnx_export",
 ))
 MAX_SEQ_LEN = 512
 MAX_NEW_TOKENS = 50

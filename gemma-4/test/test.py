@@ -27,7 +27,7 @@ VISION_BIN = OM / "vision_bin"
 PLE_TABLE = OM / "ple_table" / "embed_tokens_per_layer.bin"
 EXPORT_DIR = Path(os.environ.get(
     "GEMMA4_ONNX_EXPORT",
-    "/e-vepfs-01/ppdc/guanxj/ENetQuery/work_dirs/gemma4/onnx_export",
+    "./onnx_export",
 ))
 MAX_SEQ_LEN = 512
 MAX_NEW_TOKENS = 50
